@@ -2,8 +2,3 @@
 .venv
 /__pycache__
 /pyd
-product.db
-config.py
-database.py
-models.py
-seed.py
