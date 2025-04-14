@@ -1,3 +1,4 @@
+Задание в main.py
 создание venv
 `py -m venv .venv`
 
