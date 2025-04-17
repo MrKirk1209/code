@@ -66,7 +66,13 @@ items=[{
         "name": "Smartwatch",
         "price": 80,
         "description": "Tracks fitness and notifications"
-    }
+    },
+    {
+    "id":11,
+    "name":"laptop",
+    "price":150,
+    "description":"laptop!",
+},
 ]
 
 @app.get("/items/")
