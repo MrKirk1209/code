@@ -18,5 +18,7 @@ with Session(bind=engine) as session:
     m1=m.Movie(name="The E",duration=120,rating=8.3,description="best horror",poster="/image/maxresdefault.jpg",date_add=str(datetime.datetime.now()),genres=[g1])
     session.add(m1)
 
+    u1=m.User(email="false@gmail.com",user_name="Mr.Noski",user_password="1234")
+    session.add(u1)
 
     session.commit()

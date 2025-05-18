@@ -1,4 +1,4 @@
-from pydantic import BaseModel,Field
+from pydantic import BaseModel,Field,EmailStr
 from datetime import datetime
 from typing import List, Optional
 # class BaseProduct(BaseModel):
@@ -16,6 +16,13 @@ class BaseMovie(BaseModel):
 class BaseGenre(BaseModel):
     name: str=Field(min_length=3,max_length=255,example="horror")
     description: str=Field(min_length=3,max_length=255,example="scary movie")
+
+
+class BaseUser(BaseModel):
+    id: int
+    user_name: str = Field(example="Mr.Noski")
+    user_password: str = Field(example="1234")
+    email: EmailStr | None = Field(None, example="false@gmail.com")
 
 
 # class CategoryBase(BaseModel):

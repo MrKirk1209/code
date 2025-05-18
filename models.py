@@ -1,6 +1,6 @@
 from database import Base
 from sqlalchemy import Column,Integer,String,Table,ForeignKey,Float
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship,Mapped
 
 # product_category = Table('product_category', Base.metadata,
 #                          Column('product_id', ForeignKey('products.id'), primary_key=True),
@@ -47,5 +47,9 @@ class Movie(Base):
     date_add=Column(String(255))
     genres = relationship("Genre", secondary="movie_genre", backref="movies")
 
-
-
+class User(Base):
+    __tablename__="users"
+    id= Column(Integer,primary_key=True,autoincrement=True)
+    email = Column(String(255), nullable=True)
+    user_name=Column(String(255))
+    user_password=Column(String(255))

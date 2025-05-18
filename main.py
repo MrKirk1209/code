@@ -6,6 +6,8 @@ from typing import List
 import pyd
 import shutil
 from pathlib import Path
+from auth import basic_auth
+
 app=FastAPI()
 import uuid
 # @app.get("/movie", response_model=List[pyd.BaseMovie])
@@ -110,7 +112,7 @@ def get_one_movie(movie_id:int,db: Session=Depends(get_db)):
 
 
 @app.post("/movies")
-def create_movie(movie:pyd.CreateMovie,db: Session= Depends(get_db)):
+def create_movie(movie:pyd.CreateMovie,Verifcation = Depends(basic_auth),db: Session= Depends(get_db)):
     movie_db=db.query(m.Movie).filter(m.Movie.name==movie.name).first()
     if movie_db:
         raise HTTPException(400,"Есть")
@@ -133,7 +135,7 @@ def create_movie(movie:pyd.CreateMovie,db: Session= Depends(get_db)):
     return movie_db
 
 @app.post("/genres")
-def create_genre(genre:pyd.CreateGenre,db: Session= Depends(get_db)):
+def create_genre(genre:pyd.CreateGenre,Verifcation = Depends(basic_auth),db: Session= Depends(get_db)):
     genre_db=db.query(m.Genre).filter(m.Genre.name==genre.name).first()
     if genre_db:
         raise HTTPException(400,"Есть")
@@ -145,7 +147,7 @@ def create_genre(genre:pyd.CreateGenre,db: Session= Depends(get_db)):
     return genre_db
 
 @app.put("/movies")
-def update_movie(movie:pyd.CreateMovie,db: Session= Depends(get_db)):
+def update_movie(movie:pyd.CreateMovie,Verifcation = Depends(basic_auth),db: Session= Depends(get_db)):
     movie_db=db.query(m.Movie).filter(m.Movie.name==movie.name).first()
     if movie_db is None:
         raise HTTPException(400,"Нет такого фильма")
@@ -171,7 +173,7 @@ def update_movie(movie:pyd.CreateMovie,db: Session= Depends(get_db)):
     db.refresh(movie_db)
     return movie_db
 @app.delete("/movies/{movie_id}")
-def delete_movie(movie_id:int,db: Session=Depends(get_db)):
+def delete_movie(movie_id:int,Verifcation = Depends(basic_auth),db: Session=Depends(get_db)):
     dmovie=db.query(m.Movie).filter(
         m.Movie.id==movie_id
     ).first()
@@ -183,7 +185,7 @@ def delete_movie(movie_id:int,db: Session=Depends(get_db)):
     return {"msg":"Фильм удален"}
 
 @app.put("/movies/{id}/image")
-async def create_upload_file(image: UploadFile,id:int,db: Session=Depends(get_db)):
+async def create_upload_file(image: UploadFile,id:int,Verifcation = Depends(basic_auth),db: Session=Depends(get_db)):
     movie=db.query(m.Movie).filter(
         m.Movie.id==id
     ).first()
@@ -207,5 +209,22 @@ async def create_upload_file(image: UploadFile,id:int,db: Session=Depends(get_db
     db.refresh(movie)
     return movie  
 
+@app.post("/user", response_model=pyd.BaseUser)
+def user_reg(create_user: pyd.CreateUser, db: Session = Depends(get_db),Verifcation = Depends(basic_auth)):
+        user_db = db.query(m.User).filter(m.User.user_name == create_user.user_name).first()
+        if user_db:
+            raise HTTPException(400, "Логин занят")
+        user_db = m.User()
+        user_db.user_name = create_user.user_name
+        user_db.user_password = create_user.user_password
+        user_db.email = create_user.email
+        db.add(user_db)
+        db.commit()
+        return user_db
+
+
+@app.get("/test")
+def get_test(user_name: m.User = Depends(basic_auth)):
+    return {"r": 2}
 
 
